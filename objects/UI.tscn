@@ -1,0 +1,140 @@
+[gd_scene load_steps=15 format=3 uid="uid://cqmbq7t8mmoso"]
+
+[ext_resource type="FontFile" uid="uid://df0aiudd6bxvl" path="res://fonts/BOLD.TTF" id="1_tscdx"]
+
+[sub_resource type="Gradient" id="Gradient_07ss3"]
+colors = PackedColorArray(0.52549, 0.494118, 1, 1, 1, 0, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_w8ma3"]
+seed = 8
+frequency = 1.0
+offset = Vector3(2.08167e-14, 2.08167e-14, 2.08167e-14)
+fractal_type = 3
+fractal_octaves = 1
+fractal_lacunarity = 1.0
+fractal_gain = 1.0
+fractal_ping_pong_strength = 4.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ytv7p"]
+width = 640
+height = 18
+seamless = true
+seamless_blend_skirt = 1.0
+as_normal_map = true
+color_ramp = SubResource("Gradient_07ss3")
+noise = SubResource("FastNoiseLite_w8ma3")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m0uq5"]
+texture = SubResource("NoiseTexture2D_ytv7p")
+
+[sub_resource type="LabelSettings" id="LabelSettings_dihfc"]
+font = ExtResource("1_tscdx")
+font_size = 8
+font_color = Color(0, 0, 0, 1)
+outline_size = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_qsb75"]
+font = ExtResource("1_tscdx")
+font_size = 24
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_lofy2"]
+font = ExtResource("1_tscdx")
+font_size = 8
+font_color = Color(0, 0, 0, 1)
+outline_size = 8
+
+[sub_resource type="Gradient" id="Gradient_0v0y2"]
+colors = PackedColorArray(0.415686, 0.866667, 0.823529, 1, 0.501173, 0.12204, 0.295003, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4jf2f"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pggkd"]
+width = 1280
+height = 32
+in_3d_space = true
+color_ramp = SubResource("Gradient_0v0y2")
+noise = SubResource("FastNoiseLite_4jf2f")
+
+[sub_resource type="Gradient" id="Gradient_ne36b"]
+colors = PackedColorArray(0.415686, 0.866667, 0.823529, 1, 0.89847, 0.374834, 0.589212, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_75rvy"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_en47o"]
+width = 1280
+height = 32
+in_3d_space = true
+as_normal_map = true
+color_ramp = SubResource("Gradient_ne36b")
+noise = SubResource("FastNoiseLite_75rvy")
+
+[node name="Note" type="CanvasLayer"]
+
+[node name="uistuff" type="Panel" parent="."]
+texture_repeat = 1
+anchors_preset = -1
+anchor_top = 0.9
+anchor_right = 1.0
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxTexture_m0uq5")
+
+[node name="Label" type="Label" parent="uistuff"]
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Score : 10000 [1.0x] - Accuracy : 100% - Combo Annihilations : 0 [PERFECT COMBO]"
+label_settings = SubResource("LabelSettings_dihfc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="."]
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = -1
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.15
+grow_horizontal = 2
+grow_vertical = 2
+text = "\"song\" - By \"the songmaker\""
+label_settings = SubResource("LabelSettings_qsb75")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = -1
+anchor_left = 0.375
+anchor_top = 0.95
+anchor_right = 0.625
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Time Left : 99:99:99 / Time Elapsed : 99:99:99"
+label_settings = SubResource("LabelSettings_lofy2")
+horizontal_alignment = 3
+vertical_alignment = 1
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.025
+anchor_right = 0.7
+anchor_bottom = 0.05
+offset_bottom = -4.0
+value = 50.0
+nine_patch_stretch = true
+texture_under = SubResource("NoiseTexture2D_pggkd")
+texture_progress = SubResource("NoiseTexture2D_en47o")

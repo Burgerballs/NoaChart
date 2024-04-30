@@ -1,0 +1,160 @@
+[gd_resource type="VisualShader" load_steps=14 format=3 uid="uid://b45ivvls8igkq"]
+
+[ext_resource type="Script" path="res://addons/shaderV/tools/TimeScaled.gd" id="1_eqe18"]
+[ext_resource type="Script" path="res://addons/shaderV/rgba/noise/perlin2d.gd" id="2_eei3s"]
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_ea0sq"]
+default_input_values = [0, 0.4]
+initialized = true
+script = ExtResource("1_eqe18")
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_ip86r"]
+default_input_values = [0, 0.6]
+initialized = true
+script = ExtResource("1_eqe18")
+
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_mupo3"]
+parameter_name = "BooleanParameter"
+default_value_enabled = true
+default_value = true
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_dj2q4"]
+default_input_values = [1, Vector3(0, 0, 0), 2, 1.0, 3, Vector3(3, 2.08165e-12, 2.08165e-12)]
+initialized = true
+script = ExtResource("2_eei3s")
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_2oy7x"]
+input_name = "screen_uv"
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_qcik1"]
+expanded_output_ports = [0]
+operator = 2
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_wa8ss"]
+input_name = "color"
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_f1y1j"]
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_ia4u1"]
+default_input_values = [1, Vector3(4, 2.08165e-12, 2.08165e-12), 2, 1.0, 3, Vector3(3, 8, 2.08165e-12)]
+initialized = true
+script = ExtResource("2_eei3s")
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_l1vfq"]
+default_input_values = [1, Vector3(2.08165e-12, 2, 2.08165e-12), 2, 1.0, 3, Vector3(3, 7, 2.08165e-12)]
+initialized = true
+script = ExtResource("2_eei3s")
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_v4fp0"]
+default_input_values = [0, 0.2]
+initialized = true
+script = ExtResource("1_eqe18")
+
+[resource]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+
+
+// PerlinNoise2D
+#include \"res://addons/shaderV/rgba/noise/perlin2d.gdshaderinc\"
+
+void fragment() {
+// Input:5
+	vec4 n_out5p0 = COLOR;
+
+
+// Input:3
+	vec2 n_out3p0 = SCREEN_UV;
+
+
+	float n_out11p0;
+// ScaledTIME:11
+	float n_in11p0 = 0.60000;
+	{
+		n_out11p0 = n_in11p0 * TIME;
+	}
+
+
+	float n_out2p0;
+// PerlinNoise2D:2
+	float n_in2p2 = 1.00000;
+	vec3 n_in2p3 = vec3(3.00000, 0.00000, 0.00000);
+	{
+		n_out2p0 = _perlin2dNoiseFunc((vec3(n_out3p0, 0.0).xy+vec3(n_out11p0).xy)*n_in2p2, n_in2p3.xy);
+	}
+
+
+	float n_out10p0;
+// ScaledTIME:10
+	float n_in10p0 = 0.40000;
+	{
+		n_out10p0 = n_in10p0 * TIME;
+	}
+
+
+	float n_out7p0;
+// PerlinNoise2D:7
+	float n_in7p2 = 1.00000;
+	vec3 n_in7p3 = vec3(3.00000, 8.00000, 0.00000);
+	{
+		n_out7p0 = _perlin2dNoiseFunc((vec3(n_out3p0, 0.0).xy+vec3(n_out10p0).xy)*n_in7p2, n_in7p3.xy);
+	}
+
+
+	float n_out9p0;
+// ScaledTIME:9
+	float n_in9p0 = 0.20000;
+	{
+		n_out9p0 = n_in9p0 * TIME;
+	}
+
+
+	float n_out8p0;
+// PerlinNoise2D:8
+	float n_in8p2 = 1.00000;
+	vec3 n_in8p3 = vec3(3.00000, 7.00000, 0.00000);
+	{
+		n_out8p0 = _perlin2dNoiseFunc((vec3(n_out3p0, 0.0).xy+vec3(n_out9p0).xy)*n_in8p2, n_in8p3.xy);
+	}
+
+
+// VectorCompose:6
+	vec3 n_out6p0 = vec3(n_out2p0, n_out7p0, n_out8p0);
+
+
+// VectorOp:4
+	vec3 n_out4p0 = vec3(n_out5p0.xyz) * n_out6p0;
+
+
+// Output:0
+	COLOR.rgb = n_out4p0;
+
+
+}
+"
+mode = 1
+flags/light_only = false
+nodes/fragment/2/node = SubResource("VisualShaderNodeCustom_dj2q4")
+nodes/fragment/2/position = Vector2(-140, 280)
+nodes/fragment/3/node = SubResource("VisualShaderNodeInput_2oy7x")
+nodes/fragment/3/position = Vector2(-600, 300)
+nodes/fragment/4/node = SubResource("VisualShaderNodeVectorOp_qcik1")
+nodes/fragment/4/position = Vector2(200, 60)
+nodes/fragment/5/node = SubResource("VisualShaderNodeInput_wa8ss")
+nodes/fragment/5/position = Vector2(-320, 60)
+nodes/fragment/6/node = SubResource("VisualShaderNodeVectorCompose_f1y1j")
+nodes/fragment/6/position = Vector2(120, 280)
+nodes/fragment/7/node = SubResource("VisualShaderNodeCustom_ia4u1")
+nodes/fragment/7/position = Vector2(-140, 440)
+nodes/fragment/8/node = SubResource("VisualShaderNodeCustom_l1vfq")
+nodes/fragment/8/position = Vector2(-100, 620)
+nodes/fragment/9/node = SubResource("VisualShaderNodeCustom_v4fp0")
+nodes/fragment/9/position = Vector2(-480, 560)
+nodes/fragment/10/node = SubResource("VisualShaderNodeCustom_ea0sq")
+nodes/fragment/10/position = Vector2(-480, 460)
+nodes/fragment/11/node = SubResource("VisualShaderNodeCustom_ip86r")
+nodes/fragment/11/position = Vector2(-480, 380)
+nodes/fragment/12/node = SubResource("VisualShaderNodeBooleanParameter_mupo3")
+nodes/fragment/12/position = Vector2(-932.829, 611.826)
+nodes/fragment/connections = PackedInt32Array(3, 0, 2, 0, 5, 0, 4, 0, 2, 0, 6, 0, 6, 0, 4, 1, 7, 0, 6, 1, 3, 0, 7, 0, 3, 0, 8, 0, 8, 0, 6, 2, 9, 0, 8, 1, 10, 0, 7, 1, 11, 0, 2, 1, 4, 0, 0, 0)

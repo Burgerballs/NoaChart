@@ -1,0 +1,212 @@
+[gd_scene load_steps=19 format=3 uid="uid://d23tarw3l2yux"]
+
+[ext_resource type="Texture2D" uid="uid://oacujuu6yuxk" path="res://images/team_jub.png" id="1_4mvld"]
+[ext_resource type="Script" path="res://scenes/Intro.gd" id="1_ru41h"]
+[ext_resource type="FontFile" uid="uid://bhfyiooadgc6o" path="res://fonts/sazanami-gothic.ttf" id="2_yq6a2"]
+[ext_resource type="Shader" path="res://scenes/HueShifter.gdshader" id="3_kg0kk"]
+[ext_resource type="AudioStream" uid="uid://baktf6kv3g4op" path="res://audio/something_srartrtup.mp3" id="4_s35hk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p4ah8"]
+
+[sub_resource type="Gradient" id="Gradient_g0ags"]
+colors = PackedColorArray(1, 0.498039, 0.152941, 1, 1, 0.854902, 0.756863, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_keamx"]
+gradient = SubResource("Gradient_g0ags")
+width = 1280
+height = 10
+
+[sub_resource type="Curve" id="Curve_pictx"]
+max_value = 2.0
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.121514, 1), 0.0, 0.0, 0, 0, Vector2(1, 2), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_6yxps"]
+offsets = PackedFloat32Array(0, 0.0400844, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_he6gd"]
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Rect2(0, 0, 317, 188), Rect2(317, 0, 317, 188), Rect2(634, 0, 317, 188), Rect2(951, 0, 317, 188), Rect2(1268, 0, 317, 188), Rect2(1585, 0, 317, 188)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:offset")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3jgfv"]
+_data = {
+"idle": SubResource("Animation_he6gd")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_04yyd"]
+shader = ExtResource("3_kg0kk")
+shader_parameter/hueThing = 2.08165e-12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f0fo5"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+anti_aliasing = false
+
+[sub_resource type="LabelSettings" id="LabelSettings_nqfxo"]
+font = ExtResource("2_yq6a2")
+font_size = 10
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_ulbrb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/path = NodePath("AudioStreamPlayer:playing")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ColorRect3:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_v527l"]
+resource_name = "intro"
+length = 15.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AudioStreamPlayer:playing")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ColorRect3:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8, 6.6, 15.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3a0mi"]
+_data = {
+"RESET": SubResource("Animation_ulbrb"),
+"intro": SubResource("Animation_v527l")
+}
+
+[node name="Intro" type="Node2D"]
+clip_children = 2
+material = SubResource("ShaderMaterial_p4ah8")
+script = ExtResource("1_ru41h")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0, 0, 1)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="ColorRect"]
+position = Vector2(320, 240)
+amount = 100
+speed_scale = 0.1
+fract_delta = false
+local_coords = true
+texture = SubResource("GradientTexture2D_keamx")
+particle_flag_align_y = true
+direction = Vector2(2.08165e-12, 40)
+spread = 180.0
+gravity = Vector2(2.08165e-12, 2.08165e-12)
+initial_velocity_max = 789.27
+scale_amount_curve = SubResource("Curve_pictx")
+color_ramp = SubResource("Gradient_6yxps")
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(162, 146)
+texture = ExtResource("1_4mvld")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 317, 188)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]
+libraries = {
+"": SubResource("AnimationLibrary_3jgfv")
+}
+autoplay = "idle"
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_04yyd")
+offset_right = 640.0
+offset_bottom = 480.0
+
+[node name="Label" type="Label" parent="."]
+offset_left = 296.0
+offset_top = 146.0
+offset_right = 352.0
+offset_bottom = 162.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_f0fo5")
+text = "A Game By"
+label_settings = SubResource("LabelSettings_nqfxo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_s35hk")
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_3a0mi")
+}
+autoplay = "intro"
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

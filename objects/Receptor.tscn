@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcj824xu0bgk1"]
+
+[ext_resource type="Script" path="res://objects/Receptor.gd" id="1_hmw07"]
+
+[node name="Receptor" type="Panel"]
+custom_minimum_size = Vector2(32, 8)
+script = ExtResource("1_hmw07")

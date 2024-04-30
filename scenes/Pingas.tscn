@@ -1,0 +1,420 @@
+[gd_scene load_steps=21 format=3 uid="uid://cj6fbiwj1fweg"]
+
+[ext_resource type="Script" path="res://scenes/Pingas.gd" id="1_ug485"]
+[ext_resource type="Script" path="res://addons/shaderV/rgba/generate_shapes/chekerboardPattern.gd" id="2_3vjoc"]
+[ext_resource type="FontFile" uid="uid://bhfyiooadgc6o" path="res://fonts/sazanami-gothic.ttf" id="2_angga"]
+[ext_resource type="Texture2D" uid="uid://52qww261vwpf" path="res://images/pingas.png" id="3_m1nr4"]
+[ext_resource type="PackedScene" uid="uid://povcfkwhestl" path="res://objects/Strumline.tscn" id="4_sdfll"]
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_eq0ln"]
+default_input_values = [1, Vector3(8, 8, 0), 2, Vector3(0.3, 0.4, 1), 3, 1.0]
+initialized = true
+script = ExtResource("2_3vjoc")
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_g017w"]
+output_port_for_preview = 0
+input_name = "uv"
+
+[sub_resource type="VisualShader" id="VisualShader_wcwte"]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+
+
+// CheckerboardShape
+#include \"res://addons/shaderV/rgba/generate_shapes/chekerboardPattern.gdshaderinc\"
+
+void fragment() {
+// Input:3
+	vec2 n_out3p0 = UV;
+
+
+	vec3 n_out2p0;
+	float n_out2p1;
+// CheckerboardShape:2
+	vec3 n_in2p1 = vec3(8.00000, 8.00000, 0.00000);
+	vec3 n_in2p2 = vec3(0.30000, 0.40000, 1.00000);
+	float n_in2p3 = 1.00000;
+	{
+		n_out2p0 = n_in2p2;
+		n_out2p1 = _checkerboardPatternFunc(vec3(n_out3p0, 0.0).xy, n_in2p1.xy) * n_in2p3;
+	}
+
+
+// Output:0
+	COLOR.rgb = n_out2p0;
+	COLOR.a = n_out2p1;
+
+
+}
+"
+mode = 1
+flags/light_only = false
+nodes/fragment/2/node = SubResource("VisualShaderNodeCustom_eq0ln")
+nodes/fragment/2/position = Vector2(-100, 180)
+nodes/fragment/3/node = SubResource("VisualShaderNodeInput_g017w")
+nodes/fragment/3/position = Vector2(-560, 180)
+nodes/fragment/connections = PackedInt32Array(3, 0, 2, 0, 2, 1, 0, 1, 2, 0, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i4itq"]
+shader = SubResource("VisualShader_wcwte")
+
+[sub_resource type="Shader" id="Shader_ejuen"]
+code = "shader_type canvas_item;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+uniform bool keep_luminance = false;
+uniform vec4 color_start: source_color = vec4(1.0);
+uniform float start_pos: hint_range(0.0, 0.99, 0.01) = 0.0;
+uniform vec4 color_mid: source_color = vec4(1.0);
+uniform float mid_pos: hint_range(0.0, 0.99, 0.01) = 0.5;
+uniform vec4 color_end: source_color = vec4(1.0);
+uniform float end_pos: hint_range(0.0, 0.99, 0.01) = 0.99;
+uniform bool midpos_enabled = false;
+
+uniform float effect_filling: hint_range(0.0, 1.0, 0.01) = 1.0;
+
+vec3 rgb2hsv(vec3 c)
+{
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+// All components are in the range [0…1], including hue.
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+//function from: https://gamedev.stackexchange.com/a/75928
+vec4 to_gray(vec4 tex)
+{
+	float avg = (tex.r + tex.g + tex.b) / 3.0;
+	return vec4(vec3(avg),tex.a);
+}
+
+vec4 to_color(vec4 gray, vec4 col)
+{
+	return gray * col;
+}
+
+void fragment()
+{
+	vec4 tex = texture(SCREEN_TEXTURE, SCREEN_UV);
+	vec3 hsv = rgb2hsv(tex.rgb);
+	
+	// the .r here represents HUE, .g is SATURATION, .b is LUMINANCE
+	vec4 color;
+	
+	if (hsv.b < start_pos) {color = color_start;}
+	if (hsv.b > end_pos) {color = color_end;}
+	
+	if (hsv.b > start_pos && hsv.b < end_pos){
+		if (midpos_enabled && mid_pos > start_pos && mid_pos < end_pos){
+			if (hsv.b > mid_pos){
+				color = mix(color_mid, color_end, (hsv.b-mid_pos)/(end_pos-mid_pos));
+			}
+			else{
+				color = mix(color_start, color_mid, (hsv.b-start_pos)/(mid_pos-start_pos));
+			}
+		}
+		else {
+			color = mix(color_start, color_end, (hsv.b-start_pos)/(end_pos-start_pos));
+		}
+	}
+	
+	tex = to_gray(tex);
+	if (keep_luminance){
+		tex = to_color(tex, color);}
+	else{
+		tex = color;
+	}
+	
+	COLOR = mix( texture(SCREEN_TEXTURE, SCREEN_UV), tex, effect_filling);
+	COLOR.a = min( texture(SCREEN_TEXTURE, SCREEN_UV).a, tex.a);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gctg5"]
+shader = SubResource("Shader_ejuen")
+shader_parameter/keep_luminance = true
+shader_parameter/color_start = Color(0.0431373, 0, 0.0431373, 1)
+shader_parameter/start_pos = 0.0
+shader_parameter/color_mid = Color(0.207843, 0.239216, 0.247059, 1)
+shader_parameter/mid_pos = 0.5
+shader_parameter/color_end = Color(1, 1, 1, 1)
+shader_parameter/end_pos = 0.99
+shader_parameter/midpos_enabled = false
+shader_parameter/effect_filling = 0.82
+
+[sub_resource type="Gradient" id="Gradient_ia6lw"]
+colors = PackedColorArray(0, 0, 0, 0.501961, 0, 0, 0, 0.219608)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_p708v"]
+gradient = SubResource("Gradient_ia6lw")
+fill_from = Vector2(1, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_o2kqj"]
+texture = SubResource("GradientTexture2D_p708v")
+
+[sub_resource type="LabelSettings" id="LabelSettings_nrfef"]
+line_spacing = 2.08165e-12
+font = ExtResource("2_angga")
+font_size = 9
+
+[sub_resource type="LabelSettings" id="LabelSettings_uqiii"]
+line_spacing = 2.08165e-12
+font = ExtResource("2_angga")
+font_size = 9
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_rky5r"]
+line_spacing = 2.08165e-12
+font = ExtResource("2_angga")
+font_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_7edj6"]
+font = ExtResource("2_angga")
+font_size = 48
+font_color = Color(1, 0, 0, 1)
+outline_size = 16
+
+[sub_resource type="LabelSettings" id="LabelSettings_p1d41"]
+font = ExtResource("2_angga")
+font_size = 8
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_m8kmg"]
+font = ExtResource("2_angga")
+font_size = 18
+font_color = Color(0, 1, 0, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Pingas" type="Node2D"]
+script = ExtResource("1_ug485")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0.372549, 0.72549, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_i4itq")
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0.372549, 0.72549, 1)
+
+[node name="Pingas" type="Sprite2D" parent="."]
+position = Vector2(321, 240)
+scale = Vector2(0.493, 0.408)
+texture = ExtResource("3_m1nr4")
+
+[node name="Panel" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_gctg5")
+offset_left = 225.0
+offset_right = 415.0
+offset_bottom = 480.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_o2kqj")
+
+[node name="Strumline" parent="." instance=ExtResource("4_sdfll")]
+position = Vector2(320, 400)
+scroll_speed = 600
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 2.0
+offset_right = 277.0
+offset_bottom = 77.0
+text = "Song Info
+Name: Hedgehog Stew
+Name (Data): hedgehog_stew
+Artist: iteachvader
+Source: youtube.com
+
+Editor Info:
+Scroll Time: 400MS
+Note Snap: 1/16
+Playback Speed: 1x
+
+Time Info:
+BPM: 100
+Time: 1:00:000 / 1:00:000
+Bar: 2
+Beat: 8
+Step: 32"
+label_settings = SubResource("LabelSettings_nrfef")
+
+[node name="Label3" type="Label" parent="."]
+offset_left = 415.0
+offset_right = 640.0
+offset_bottom = 480.0
+text = "Press ↑/↓ to navigate a chart (based on snap)
+Press Z/X to decrease/increase note snap
+Press 1,2,3,4 to place normal notes
+Press 5,6,7 to place L/M/R notes
+Press 8/9 to place FX notes
+Press ←/→ to navigate a full bar in chart
+
+CTRL+1/2/3/4/5/6/7/8/9 to select note
+(SELECT then navigate to resize slider)
+
+SHIFT+1/2/3/4/5/6/7/8/9 to delete note
+
+Legends:
+S = Step
+B = beat
+Br = bar
+
+Menus:
+L to open load menu
+M to open metadata menu
+S to save
+CTRL-SHIFT-BACKSPACE to delete all notes
+ENTER to test chart (open gameplay)"
+label_settings = SubResource("LabelSettings_uqiii")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel2" type="Panel" parent="."]
+offset_left = 118.0
+offset_top = 120.0
+offset_right = 240.0
+offset_bottom = 211.0
+
+[node name="Label" type="Label" parent="Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Note Info
+======================
+
+Note#0
+Time: 0.0s
+Len: 0.0s
+Type: 'normal'"
+label_settings = SubResource("LabelSettings_rky5r")
+horizontal_alignment = 1
+vertical_alignment = 3
+
+[node name="pingas_window" type="Panel" parent="."]
+offset_left = 108.0
+offset_top = 80.0
+offset_right = 534.0
+offset_bottom = 392.0
+
+[node name="Label" type="Label" parent="pingas_window"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.25
+grow_horizontal = 2
+grow_vertical = 2
+text = "PINGAS"
+label_settings = SubResource("LabelSettings_7edj6")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pingas2" type="Sprite2D" parent="pingas_window"]
+position = Vector2(348, 40)
+scale = Vector2(0.099, 0.099)
+texture = ExtResource("3_m1nr4")
+
+[node name="Pingas3" type="Sprite2D" parent="pingas_window"]
+position = Vector2(80, 40)
+scale = Vector2(0.099, 0.099)
+texture = ExtResource("3_m1nr4")
+flip_h = true
+
+[node name="Panel" type="Panel" parent="pingas_window"]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 152.0
+offset_right = 391.0
+offset_bottom = 290.0
+
+[node name="Label" type="Label" parent="pingas_window/Panel"]
+layout_mode = 0
+offset_top = -73.0
+offset_right = 354.0
+text = "Pingas ver. 1.0
+Pingas Format ver. 1
+\"SnooPING AS I see?\"
+Welcome to pingas the editor we use to make ReproRhythm
+have fun!"
+label_settings = SubResource("LabelSettings_p1d41")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="pingas_window/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Panel" type="Panel" parent="pingas_window/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="pingas_window/Panel/VBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="pingas_window/Panel/VBoxContainer/Panel/HBoxContainer"]
+custom_minimum_size = Vector2(256, 2.08165e-12)
+layout_mode = 2
+placeholder_text = "chart name (non-data)"
+alignment = 1
+
+[node name="Button" type="Button" parent="pingas_window/Panel/VBoxContainer/Panel/HBoxContainer"]
+layout_mode = 2
+text = "new"
+
+[node name="Panel2" type="Panel" parent="pingas_window/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 32)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="pingas_window/Panel/VBoxContainer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="pingas_window/Panel/VBoxContainer/Panel2/HBoxContainer"]
+custom_minimum_size = Vector2(256, 2.08165e-12)
+layout_mode = 2
+placeholder_text = "chart name (data)"
+alignment = 1
+
+[node name="Button" type="Button" parent="pingas_window/Panel/VBoxContainer/Panel2/HBoxContainer"]
+layout_mode = 2
+text = "load"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 413.0
+offset_right = 640.0
+offset_bottom = 23.0
+text = "SAVED!!!"
+label_settings = SubResource("LabelSettings_m8kmg")
+horizontal_alignment = 1
+vertical_alignment = 1

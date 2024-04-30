@@ -1,0 +1,133 @@
+[gd_scene load_steps=16 format=3 uid="uid://c8sdjro7ity66"]
+
+[ext_resource type="FontFile" uid="uid://bhfyiooadgc6o" path="res://fonts/sazanami-gothic.ttf" id="1_4e0ue"]
+[ext_resource type="Script" path="res://scenes/cache-screen.gd" id="1_60gyb"]
+[ext_resource type="Shader" uid="uid://b45ivvls8igkq" path="res://scenes/rainbow.tres" id="2_aqkk7"]
+[ext_resource type="Shader" path="res://scenes/rgbasa.gdshader" id="4_umsd0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c8okl"]
+shader = ExtResource("2_aqkk7")
+
+[sub_resource type="LabelSettings" id="LabelSettings_t1xq8"]
+font = ExtResource("1_4e0ue")
+font_size = 39
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0iws5"]
+shader = ExtResource("2_aqkk7")
+
+[sub_resource type="LabelSettings" id="LabelSettings_ag2as"]
+font = ExtResource("1_4e0ue")
+
+[sub_resource type="LabelSettings" id="LabelSettings_adooy"]
+font = ExtResource("1_4e0ue")
+font_size = 12
+font_color = Color(1, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_em1rb"]
+shader = ExtResource("4_umsd0")
+shader_parameter/enabled = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_521vw"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rqigs"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Animation" id="Animation_etrdn"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_1uxri"]
+resource_name = "fadeout"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y3itj"]
+_data = {
+"RESET": SubResource("Animation_etrdn"),
+"fadeout": SubResource("Animation_1uxri")
+}
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_60gyb")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0, 0, 1)
+
+[node name="caching" type="Label" parent="."]
+material = SubResource("ShaderMaterial_c8okl")
+offset_right = 640.0
+offset_bottom = 129.0
+text = "Caching..."
+label_settings = SubResource("LabelSettings_t1xq8")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="text" type="Label" parent="."]
+material = SubResource("ShaderMaterial_0iws5")
+offset_left = 80.0
+offset_top = 200.0
+offset_right = 560.0
+offset_bottom = 220.0
+text = "0%"
+label_settings = SubResource("LabelSettings_ag2as")
+horizontal_alignment = 3
+
+[node name="failed" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 260.0
+offset_right = 560.0
+offset_bottom = 275.0
+text = "NO FILE - ADDING BLANK CHART"
+label_settings = SubResource("LabelSettings_adooy")
+
+[node name="bar" type="ProgressBar" parent="."]
+material = SubResource("ShaderMaterial_em1rb")
+offset_left = 80.0
+offset_top = 220.0
+offset_right = 560.0
+offset_bottom = 260.0
+theme_override_styles/background = SubResource("StyleBoxFlat_521vw")
+theme_override_styles/fill = SubResource("StyleBoxFlat_rqigs")
+value = 50.0
+show_percentage = false
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+visible = false
+offset_right = 640.0
+offset_bottom = 480.0
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ColorRect2"]
+libraries = {
+"": SubResource("AnimationLibrary_y3itj")
+}
+autoplay = "fadeout"

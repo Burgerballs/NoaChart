@@ -1,0 +1,61 @@
+[gd_scene load_steps=9 format=3 uid="uid://povcfkwhestl"]
+
+[ext_resource type="PackedScene" uid="uid://bcj824xu0bgk1" path="res://objects/Receptor.tscn" id="1_o8pma"]
+[ext_resource type="Script" path="res://objects/Strumline.gd" id="1_uevla"]
+
+[sub_resource type="Gradient" id="Gradient_5j54s"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.0188285, 0.236402, 0.267782, 0.487448, 0.514644, 0.736402, 0.761506, 0.981172)
+colors = PackedColorArray(0, 0, 0, 1, 0.227451, 0.227451, 0.321569, 1, 0, 0, 0, 1, 0.227451, 0.227451, 0.321569, 1, 0, 0, 0, 1, 0.227451, 0.227451, 0.321569, 1, 0, 0, 0, 1, 0.227451, 0.227451, 0.321569, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0o5xq"]
+gradient = SubResource("Gradient_5j54s")
+width = 146
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mi28j"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5igbk"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ry4xt"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_on2e5"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="Strumline" type="Sprite2D"]
+script = ExtResource("1_uevla")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+offset_left = -73.0
+offset_top = -651.0
+offset_right = 73.0
+offset_bottom = 317.0
+texture = SubResource("GradientTexture1D_0o5xq")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_left = -95.0
+offset_top = -8.0
+offset_right = 95.0
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Receptor" parent="HBoxContainer" instance=ExtResource("1_o8pma")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mi28j")
+
+[node name="Receptor2" parent="HBoxContainer" instance=ExtResource("1_o8pma")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5igbk")
+key = "k2"
+
+[node name="Receptor3" parent="HBoxContainer" instance=ExtResource("1_o8pma")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ry4xt")
+key = "k3"
+
+[node name="Receptor4" parent="HBoxContainer" instance=ExtResource("1_o8pma")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_on2e5")
+key = "k4"

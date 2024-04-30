@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://dmsmhurdng1hr"]
+
+[ext_resource type="Script" path="res://objects/XMBSelectableY.gd" id="1_epxc4"]
+[ext_resource type="Texture2D" uid="uid://bxx380w850ufk" path="res://images/icons/placeholder.png" id="1_yya72"]
+[ext_resource type="FontFile" uid="uid://bhfyiooadgc6o" path="res://fonts/sazanami-gothic.ttf" id="2_7th4j"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_svw77"]
+font = ExtResource("2_7th4j")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_hb68v"]
+font = ExtResource("2_7th4j")
+font_size = 11
+font_color = Color(0, 0, 0, 1)
+
+[node name="XmbSelectableY" type="Control"]
+custom_minimum_size = Vector2(640, 48)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 640.0
+script = ExtResource("1_epxc4")
+
+[node name="icon" type="Sprite2D" parent="."]
+texture = ExtResource("1_yya72")
+centered = false
+
+[node name="title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 2.0
+offset_right = 238.0
+offset_bottom = 31.0
+text = "This is a title."
+label_settings = SubResource("LabelSettings_svw77")
+
+[node name="description" type="Label" parent="."]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 29.0
+offset_right = 238.0
+offset_bottom = 43.0
+text = "This is a description."
+label_settings = SubResource("LabelSettings_hb68v")

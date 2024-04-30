@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://btcwrutff743k"]
+
+[ext_resource type="Script" path="res://objects/XMBSelectableX.gd" id="1_8wcby"]
+[ext_resource type="Texture2D" uid="uid://bxx380w850ufk" path="res://images/icons/placeholder.png" id="1_n5nj0"]
+[ext_resource type="FontFile" uid="uid://bhfyiooadgc6o" path="res://fonts/sazanami-gothic.ttf" id="3_3lqvl"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_7p4ur"]
+font = ExtResource("3_3lqvl")
+font_size = 8
+font_color = Color(0, 0, 0, 1)
+
+[node name="XmbSelectableX" type="Control"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 48.0
+offset_bottom = 48.0
+script = ExtResource("1_8wcby")
+
+[node name="icon" type="Sprite2D" parent="."]
+texture = ExtResource("1_n5nj0")
+centered = false
+
+[node name="title" type="Label" parent="."]
+offset_left = -7.0
+offset_top = 42.0
+offset_right = 57.0
+offset_bottom = 52.0
+text = "This is a title."
+label_settings = SubResource("LabelSettings_7p4ur")
+horizontal_alignment = 1

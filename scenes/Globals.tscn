@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://pxhtw3syi7hn"]
+
+[ext_resource type="Script" path="res://scenes/Globals.gd" id="1_ro1it"]
+[ext_resource type="FontFile" uid="uid://bhfyiooadgc6o" path="res://fonts/sazanami-gothic.ttf" id="2_ogbot"]
+[ext_resource type="Shader" path="res://scenes/InvertBehind.gdshader" id="2_qy5xk"]
+[ext_resource type="AudioStream" uid="uid://e48p7e38rsfh" path="res://audio/SE_jumpBlock.ogg" id="3_rq1tr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bw3l8"]
+shader = ExtResource("2_qy5xk")
+
+[sub_resource type="LabelSettings" id="LabelSettings_hfuyc"]
+font = ExtResource("2_ogbot")
+font_size = 8
+
+[node name="DebugOverlay" type="CanvasLayer"]
+process_mode = 3
+layer = 99
+script = ExtResource("1_ro1it")
+
+[node name="Label" type="Label" parent="."]
+texture_filter = 1
+texture_repeat = 1
+material = SubResource("ShaderMaterial_bw3l8")
+offset_left = 3.0
+offset_right = 640.0
+offset_bottom = 16.0
+text = "FPS: 60 | UPS: 60 | MEM: 100MB"
+label_settings = SubResource("LabelSettings_hfuyc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_rq1tr")
+max_polyphony = 1000
+
+[node name="MUSIC" type="AudioStreamPlayer" parent="."]
+process_mode = 1
+stream = ExtResource("3_rq1tr")
+max_polyphony = 1000

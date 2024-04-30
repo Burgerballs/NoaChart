@@ -1,0 +1,87 @@
+[gd_resource type="VisualShader" load_steps=9 format=3 uid="uid://bm7qf1ib4ig80"]
+
+[ext_resource type="Script" path="res://addons/shaderV/uv/animated/tilingNoffsetAnimated.gd" id="2_0f46h"]
+[ext_resource type="Texture2D" uid="uid://dukgbairam5vc" path="res://addons/shaderV/shaderV_icon.png" id="2_ndisq"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_wndao"]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_2lfhx"]
+default_input_values = [1, Vector3(0, 0, 0), 2, 0.0]
+initialized = true
+script = ExtResource("2_0f46h")
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_wi2uq"]
+input_name = "time"
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_gse13"]
+constant = 0.1
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_4d4ns"]
+output_port_for_preview = 0
+expanded_output_ports = [0]
+source = 5
+texture = ExtResource("2_ndisq")
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_g13lv"]
+input_name = "texture"
+
+[resource]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+
+
+// TilingAndOffsetUVAnimated
+#include \"res://addons/shaderV/uv/animated/tilingNoffsetAnimated.gdshaderinc\"
+
+void fragment() {
+// Input:2
+	vec2 n_out2p0 = UV;
+
+
+// FloatConstant:5
+	float n_out5p0 = 0.100000;
+
+
+// Input:4
+	float n_out4p0 = TIME;
+
+
+	vec2 n_out3p0;
+// TilingAndOffsetUVAnimated:3
+	{
+		n_out3p0.xy = _tilingNoffsetAnimatedFunc(vec3(n_out2p0, 0.0).xy, n_out4p0, vec3(n_out5p0).xy);
+	}
+
+
+	vec4 n_out6p0;
+// Texture2D:6
+	n_out6p0 = textureLod(TEXTURE, n_out3p0, n_out3p0.x);
+	float n_out6p4 = n_out6p0.a;
+
+
+// Output:0
+	COLOR.rgb = vec3(n_out6p0.xyz);
+	COLOR.a = n_out6p4;
+
+
+}
+"
+mode = 1
+flags/light_only = false
+nodes/fragment/0/position = Vector2(900, 80)
+nodes/fragment/2/node = SubResource("VisualShaderNodeInput_wndao")
+nodes/fragment/2/position = Vector2(-240, 0)
+nodes/fragment/3/node = SubResource("VisualShaderNodeCustom_2lfhx")
+nodes/fragment/3/position = Vector2(120, 60)
+nodes/fragment/4/node = SubResource("VisualShaderNodeInput_wi2uq")
+nodes/fragment/4/position = Vector2(-220, 180)
+nodes/fragment/5/node = SubResource("VisualShaderNodeFloatConstant_gse13")
+nodes/fragment/5/position = Vector2(-100, 100)
+nodes/fragment/6/node = SubResource("VisualShaderNodeTexture_4d4ns")
+nodes/fragment/6/position = Vector2(420, 80)
+nodes/fragment/7/node = SubResource("VisualShaderNodeInput_g13lv")
+nodes/fragment/7/position = Vector2(100, 260)
+nodes/fragment/connections = PackedInt32Array(5, 0, 3, 1, 4, 0, 3, 2, 7, 0, 6, 2, 2, 0, 3, 0, 3, 0, 6, 1, 3, 0, 6, 0, 6, 0, 0, 0, 6, 4, 0, 1)

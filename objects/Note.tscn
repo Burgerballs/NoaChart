@@ -1,0 +1,71 @@
+[gd_scene load_steps=6 format=3 uid="uid://b143fbvwklvli"]
+
+[ext_resource type="Script" path="res://objects/Note.gd" id="1_us8sj"]
+[ext_resource type="Texture2D" uid="uid://c11h6b1dp885v" path="res://images/burgernotes.png" id="2_u7vrg"]
+[ext_resource type="Texture2D" uid="uid://b0yp2hbjk1kyj" path="res://images/burgerlmr.png" id="4_26ovy"]
+
+[sub_resource type="Shader" id="Shader_ccsk2"]
+code = "shader_type canvas_item;
+		
+uniform vec3 r : source_color;
+uniform vec3 g : source_color;
+uniform vec3 b : source_color;
+uniform float mult;
+
+void fragment() {
+	vec4 color = COLOR;
+	vec4 newColor = color;
+	newColor.rgb = min(color.r * r + color.g * g + color.b * b, vec3(1.0));
+	newColor.a = color.a;
+
+	color = mix(color, newColor, mult);
+
+	if(color.a > 0.0) {
+		COLOR = vec4(color.rgb, color.a);
+	}
+	else{
+		COLOR = vec4(0.0, 0.0, 0.0, 0.0);	
+	}
+
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uuran"]
+resource_local_to_scene = true
+shader = SubResource("Shader_ccsk2")
+shader_parameter/r = Color(0.129412, 0.705882, 0.329412, 1)
+shader_parameter/g = Color(0.25098, 0.878431, 0, 1)
+shader_parameter/b = Color(1, 1, 1, 1)
+shader_parameter/mult = 1.0
+
+[node name="Note" type="Node2D"]
+script = ExtResource("1_us8sj")
+
+[node name="renderer-sus" type="NinePatchRect" parent="."]
+offset_left = -16.0
+offset_top = -106.0
+offset_right = 16.0
+texture = ExtResource("2_u7vrg")
+patch_margin_top = 8
+patch_margin_bottom = 8
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="renderer-lmr" type="NinePatchRect" parent="."]
+material = SubResource("ShaderMaterial_uuran")
+offset_left = -16.0
+offset_top = -8.0
+offset_right = 52.0
+texture = ExtResource("4_26ovy")
+patch_margin_left = 2
+patch_margin_right = 2
+patch_margin_bottom = 8
+axis_stretch_vertical = 1
+
+[node name="renderer" type="NinePatchRect" parent="."]
+offset_left = -16.0
+offset_top = -8.0
+offset_right = 16.0
+texture = ExtResource("2_u7vrg")
+patch_margin_bottom = 8
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
